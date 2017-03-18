@@ -17,8 +17,7 @@ Instagram.getCsrfToken().then((csrf) =>
 
     Instagram.getUserDataByUsername('username-for-get').then((t) =>
     {
-      let userId = JSON.parse(t).user.id
-      Instagram.getUserFollowers(1436473509).then((t) =>
+      Instagram.getUserFollowers(JSON.parse(t).user.id).then((t) =>
       {
         console.log(t); // - instagram followers for user "username-for-get"
       })
