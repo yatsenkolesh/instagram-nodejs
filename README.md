@@ -1,6 +1,11 @@
 # instagram-nodejs
 Auth and get followers on instagram with nodejs
 
+### To install from npm repository (I recommended use yarn, but you can use npm):
+```
+yarn add instagram-nodejs-without-api
+```
+
 ### You can get instagram followers with next code:
 ```js
 Instagram = new Instagram()
