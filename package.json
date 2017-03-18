@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "fetch-cookie": "^0.6.0",
+    "form-data": "^2.1.2",
+    "node-fetch": "^1.6.3"
+  }
+}
