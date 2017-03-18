@@ -1,7 +1,7 @@
 # instagram-nodejs
 Auth and get followers on instagram with nodejs
 
-###You can get instagram followers with next code:
+### You can get instagram followers with next code:
 ```js
 Instagram = new Instagram()
 
