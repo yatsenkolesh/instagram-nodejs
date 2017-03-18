@@ -8,7 +8,7 @@
 const fetch = require('node-fetch');
 const formData = require('form-data');
 
-class Instagram
+module.exports = class Instagram
 {
   /**
     * Constructor
