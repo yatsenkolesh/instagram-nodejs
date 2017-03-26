@@ -3,5 +3,32 @@
     "fetch-cookie": "^0.6.0",
     "form-data": "^2.1.2",
     "node-fetch": "^1.6.3"
-  }
+  },
+  "name": "instagram-nodejs-without-api",
+  "description": "Auth and get followers on instagram with nodejs",
+  "version": "0.0.5",
+  "main": "instagram.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yatsenkolesh/instagram-nodejs.git"
+  },
+  "keywords": [
+    "Instagram",
+    "Instagram",
+    "without",
+    "API",
+    "get",
+    "instagram",
+    "followers",
+    "nodejs"
+  ],
+  "author": "Alex Yatsenko <webfay1@gmail.com> (http://webfay.net)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yatsenkolesh/instagram-nodejs/issues"
+  },
+  "homepage": "https://github.com/yatsenkolesh/instagram-nodejs#readme"
 }
