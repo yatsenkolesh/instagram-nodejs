@@ -90,9 +90,12 @@ module.exports = class Instagram
     }).then(res =>
       res.text().then(function(html)
       {
+        //prepare convert to json
+        let json = html
+
         try
         {
-          let json = JSON.parse(html)
+          json = JSON.parse(json)
         }
         catch(e)
         {
@@ -114,7 +117,7 @@ module.exports = class Instagram
         else
           return self.userIdFollowers[userId]
       }).
-      then((e) =>
+      catch((e) =>
       {
         console.log('Instagram returned:' + e)
       })
