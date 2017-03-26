@@ -90,7 +90,15 @@ module.exports = class Instagram
     }).then(res =>
       res.text().then(function(html)
       {
-        let json = JSON.parse(html)
+        try
+        {
+          let json = JSON.parse(html)
+        }
+        catch(e)
+        {
+          console.log('Session error')
+          return JSON.parse('{}');
+        }
         self.userIdFollowers[userId] = self.userIdFollowers[userId].concat(json.followed_by.nodes)
         if(json.followed_by.page_info.has_next_page)
         {
@@ -105,6 +113,10 @@ module.exports = class Instagram
         }
         else
           return self.userIdFollowers[userId]
+      }).
+      then((e) =>
+      {
+        console.log('Instagram returned:' + e)
       })
     )
   }
