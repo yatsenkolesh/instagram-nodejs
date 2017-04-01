@@ -47,4 +47,4 @@ Inst.follow(3, 1) //unfollow "kevin"
 
 You can get user id with Inst.getUserDataByUsername() method
 
-Star this repository on github please. Thank you
+Star this repository on github, please. Thank you
