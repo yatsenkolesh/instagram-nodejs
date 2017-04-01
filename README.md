@@ -34,3 +34,17 @@ Instagram.getCsrfToken().then((csrf) =>
   })
 })
 ```
+
+### Follow/unfollow
+```js
+Inst = new Instagram()
+
+Inst.csrfToken = 'your-csrf'
+Inst.sessionId = 'your-session-id'
+Inst.follow(3,0) //follow "kevin"
+Inst.follow(3, 1) //unfollow "kevin"
+````
+
+You can get user id with Inst.getUserDataByUsername() method
+
+Star this repository on github please. Thank you
