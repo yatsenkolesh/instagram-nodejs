@@ -1,5 +1,6 @@
 /**
   * @author Alex Yatsenko
+  * @license BSD-3-Clause
   * @link https://github.com/yatsenkolesh/instagram-nodejs
 */
 
