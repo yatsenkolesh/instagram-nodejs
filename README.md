@@ -1,5 +1,6 @@
 # instagram-nodejs
-Auth and get followers on instagram with nodejs
+
+#### Auth and get followers on instagram with nodejs
 
 #### License - BSD-3-Clause
 #### Important : you must update csrf token and sessionId only if password was changed
