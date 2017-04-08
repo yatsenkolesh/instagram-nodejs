@@ -1,15 +1,15 @@
 # instagram-nodejs
 Auth and get followers on instagram with nodejs
 
+#### License - BSD-3-Clause
+#### Important : you must update csrf token and sessionId only if password was changed
 
-### Important : you must update csrf token and sessionId only if password was changed
-
-### To install from npm repository (I recommended use yarn, but you can use npm):
+#### To install from npm repository (I recommended use yarn, but you can use npm):
 ```
 yarn add instagram-nodejs-without-api
 ```
 
-### You can get instagram followers with next code:
+#### You can get instagram followers with next code:
 ```js
 Instagram = new Instagram()
 
