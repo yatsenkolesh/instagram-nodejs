@@ -1,6 +1,5 @@
 /**
   * @author Alex Yatsenko
-  * @license BSD-3-Clause
   * @link https://github.com/yatsenkolesh/instagram-nodejs
 */
 
@@ -20,6 +19,8 @@ module.exports = class Instagram
     this.sessionId = sessionId
     this.userAgent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2900.1 Iron Safari/537.36'
     this.userIdFollowers = {};
+    this.timeoutForCounter = 300
+    this.timeoutForCounterValue = 100
   }
 
   /**
@@ -42,7 +43,7 @@ module.exports = class Instagram
     * @param {String} Params
     * @return {Object} array followers list
   */
-  getUserFollowers(userId, command, params)
+  getUserFollowers(userId, command, params, followersCounter)
   {
     command = !command ? 'first' : command
     params = !params ? 20 : params
@@ -103,13 +104,24 @@ module.exports = class Instagram
           console.log('Session error')
           return JSON.parse('{}');
         }
-        self.userIdFollowers[userId] = self.userIdFollowers[userId].concat(json.followed_by.nodes)
+
+        if(json.status == 'ok')
+          self.userIdFollowers[userId] = self.userIdFollowers[userId].concat(json.followed_by.nodes)
+        else
+          console.log('Error handle user followers with id: ' + userId)
+
         if(json.followed_by.page_info.has_next_page)
         {
           return new Promise((resolve) =>
           {
             let after = json.followed_by.page_info.end_cursor
-            resolve(self.getUserFollowers(userId, 'after', after + ',20'))
+            if(json.followed_by.count > self.timeoutForCounter || json.status != 'ok')
+              setTimeout(() =>
+              {
+                resolve(self.getUserFollowers(userId, 'after', after + ',20'))
+              }, self.timeoutForCounterValue)
+            else
+              resolve(self.getUserFollowers(userId, 'after', after + ',20'))
           },
           (reject) =>
             console.log('Error handle response from instagram server(get followers request)')
@@ -193,35 +205,5 @@ module.exports = class Instagram
     ).catch(() =>
       console.log('Instagram authentication failed')
     )
-  }
-
-  /**
-    * I did not want to implement this, but I need a stars on github
-    * If you use this library - star this rep https://github.com/yatsenkolesh/instagram-nodejs
-    * Thank you, bro
-    * Follow/unfollow user by id
-    * @param {int} userID
-    * @param {boolean} isUnfollow
-    * @return {object} Promise of fetch request
-  */
-  follow(userId, isUnfollow)
-  {
-    return fetch('https://www.instagram.com/web/friendships/'+userId+(isUnfollow ? '/unfollow' : '/follow'),
-    {
-      'method' : 'post',
-      'headers' :
-      {
-        'referer': 'https://www.instagram.com/',
-        'origin' : 'https://www.instagram.com',
-        'user-agent' : this.userAgent,
-        'x-instagram-ajax' : '1',
-        'x-requested-with' : 'XMLHttpRequest',
-        'x-csrftoken' : this.csrfToken,
-        cookie :' sessionid='+this.sessionId+'; csrftoken='+this.csrfToken
-      }
-    }).then(res =>
-    {
-      return res
-    })
   }
 }
