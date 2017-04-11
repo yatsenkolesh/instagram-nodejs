@@ -20,7 +20,8 @@ module.exports = class Instagram
     this.userAgent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2900.1 Iron Safari/537.36'
     this.userIdFollowers = {};
     this.timeoutForCounter = 300
-    this.timeoutForCounterValue = 100
+    this.timeoutForCounterValue = 300
+    this.receivePromises = {}
   }
 
   /**
@@ -43,8 +44,13 @@ module.exports = class Instagram
     * @param {String} Params
     * @return {Object} array followers list
   */
-  getUserFollowers(userId, command, params, followersCounter)
+  getUserFollowers(userId, command, params, followersCounter, selfSelf)
   {
+    const self = this
+
+    if((typeof self.receivePromises[userId] !== 'undefined' && self.receivePromises[userId] != 0) && !selfSelf)
+      return 0
+
     command = !command ? 'first' : command
     params = !params ? 20 : params
 
@@ -73,8 +79,7 @@ module.exports = class Instagram
     if(!this.userIdFollowers[userId])
       this.userIdFollowers[userId] = []
 
-    const self = this;
-
+    self.receivePromises[userId] = 1
     return fetch('https://www.instagram.com/query/',
     {
       'method' : 'post',
@@ -94,6 +99,10 @@ module.exports = class Instagram
       {
         //prepare convert to json
         let json = html
+
+        console.log(json)
+
+        // console.log(json)
 
         try
         {
@@ -118,17 +127,20 @@ module.exports = class Instagram
             if(json.followed_by.count > self.timeoutForCounter || json.status != 'ok')
               setTimeout(() =>
               {
-                resolve(self.getUserFollowers(userId, 'after', after + ',20'))
+                resolve(self.getUserFollowers(userId, 'after', after + ',20',1,1 ))
               }, self.timeoutForCounterValue)
             else
-              resolve(self.getUserFollowers(userId, 'after', after + ',20'))
+              resolve(self.getUserFollowers(userId, 'after', after + ',20',1,1))
           },
           (reject) =>
             console.log('Error handle response from instagram server(get followers request)')
         )
         }
         else
+        {
+          self.receivePromises[userId] = 0
           return self.userIdFollowers[userId]
+        }
       }).
       catch((e) =>
       {
