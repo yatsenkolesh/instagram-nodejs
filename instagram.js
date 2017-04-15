@@ -129,15 +129,10 @@ module.exports = class Instagram
     }
     }).then(res =>
       {
-        res.text().then(function(html)
+        return res.text().then(function(html)
         {
           //prepare convert to json
           let json = html
-
-          console.log(json)
-          console.log(Object.keys(self.userIdFollowers[userId]).length)
-
-          // console.log(json)
 
           try
           {
@@ -166,18 +161,6 @@ module.exports = class Instagram
               }
               else
               {
-                console.log('RETURNED')
-                console.log('RETURNED')
-                console.log('RETURNED')
-                console.log('RETURNED')
-                console.log('RETURNED')
-                console.log('RETURNED')
-                console.log('RETURNED')
-                console.log('RETURNED')
-                console.log('RETURNED')
-
-                // process.exit(-1)
-
                 self.receivePromises[userId] = undefined
                 return self.userIdFollowers[userId]
               }
