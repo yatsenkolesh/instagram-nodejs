@@ -51,37 +51,13 @@ module.exports = class Instagram
     let blocked = 0
     if(typeof self.receivePromises[userId] !== 'undefined' && !selfSelf)
     {
-      console.log('Blocked block')
-      console.log('Blocked block')
-      console.log('Blocked block')
-      console.log('Blocked block')
-      console.log('Blocked block')
-      console.log('Blocked block')
-      console.log('Blocked block')
-      console.log('Blocked block')
-      console.log('Blocked block')
-      console.log('Blocked block')
       blocked = 1
       return 0
     }
 
     if(!params && blocked)
     {
-      console.log('Hau hai')
-      console.log('Hau hai')
-      console.log('Hau hai')
-      console.log('Hau hai')
-      console.log('Hau hai')
-      console.log('Hau hai')
-      console.log('Hau hai')
-      console.log('Hau hai')
-      console.log('Hau hai')
-      console.log('Hau hai')
-      console.log('Hau hai')
-      console.log('Hau hai')
-      console.log('Hau hai')
-      console.log('Hau hai')
-      // process.exit(-1)
+      return
     }
 
     command = !command ? 'first' : command
