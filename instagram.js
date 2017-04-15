@@ -20,7 +20,7 @@ module.exports = class Instagram
     this.userAgent = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2900.1 Iron Safari/537.36'
     this.userIdFollowers = {};
     this.timeoutForCounter = 300
-    this.timeoutForCounterValue = 300
+    this.timeoutForCounterValue = 30000
     this.receivePromises = {}
   }
 
@@ -48,8 +48,41 @@ module.exports = class Instagram
   {
     const self = this
 
-    if((typeof self.receivePromises[userId] !== 'undefined' && self.receivePromises[userId] != 0) && !selfSelf)
+    let blocked = 0
+    if(typeof self.receivePromises[userId] !== 'undefined' && !selfSelf)
+    {
+      console.log('Blocked block')
+      console.log('Blocked block')
+      console.log('Blocked block')
+      console.log('Blocked block')
+      console.log('Blocked block')
+      console.log('Blocked block')
+      console.log('Blocked block')
+      console.log('Blocked block')
+      console.log('Blocked block')
+      console.log('Blocked block')
+      blocked = 1
       return 0
+    }
+
+    if(!params && blocked)
+    {
+      console.log('Hau hai')
+      console.log('Hau hai')
+      console.log('Hau hai')
+      console.log('Hau hai')
+      console.log('Hau hai')
+      console.log('Hau hai')
+      console.log('Hau hai')
+      console.log('Hau hai')
+      console.log('Hau hai')
+      console.log('Hau hai')
+      console.log('Hau hai')
+      console.log('Hau hai')
+      console.log('Hau hai')
+      console.log('Hau hai')
+      // process.exit(-1)
+    }
 
     command = !command ? 'first' : command
     params = !params ? 20 : params
@@ -95,58 +128,75 @@ module.exports = class Instagram
         cookie :' sessionid='+this.sessionId+'; csrftoken='+this.csrfToken
     }
     }).then(res =>
-      res.text().then(function(html)
       {
-        //prepare convert to json
-        let json = html
-
-        console.log(json)
-
-        // console.log(json)
-
-        try
+        res.text().then(function(html)
         {
-          json = JSON.parse(json)
-        }
-        catch(e)
-        {
-          console.log('Session error')
-          return JSON.parse('{}');
-        }
+          //prepare convert to json
+          let json = html
 
-        if(json.status == 'ok')
-          self.userIdFollowers[userId] = self.userIdFollowers[userId].concat(json.followed_by.nodes)
-        else
-          console.log('Error handle user followers with id: ' + userId)
+          console.log(json)
+          console.log(Object.keys(self.userIdFollowers[userId]).length)
 
-        if(json.followed_by.page_info.has_next_page)
-        {
-          return new Promise((resolve) =>
+          // console.log(json)
+
+          try
           {
-            let after = json.followed_by.page_info.end_cursor
-            if(json.followed_by.count > self.timeoutForCounter || json.status != 'ok')
-              setTimeout(() =>
+            json = JSON.parse(json)
+          }
+          catch(e)
+          {
+            console.log('Session error')
+            return JSON.parse('{}');
+          }
+
+          if(json.status == 'ok')
+          {
+            self.userIdFollowers[userId] = self.userIdFollowers[userId].concat(json.followed_by.nodes)
+
+            if(json.followed_by.page_info.has_next_page)
+            {
+              return new Promise((resolve) =>
               {
-                resolve(self.getUserFollowers(userId, 'after', after + ',20',1,1 ))
-              }, self.timeoutForCounterValue)
-            else
-              resolve(self.getUserFollowers(userId, 'after', after + ',20',1,1))
-          },
-          (reject) =>
-            console.log('Error handle response from instagram server(get followers request)')
-        )
-        }
-        else
+                let after = json.followed_by.page_info.end_cursor
+                resolve(self.getUserFollowers(userId, 'after', after + ',20',1,1))
+              },
+              (reject) =>
+                console.log('Error handle response from instagram server(get followers request)')
+              )
+              }
+              else
+              {
+                console.log('RETURNED')
+                console.log('RETURNED')
+                console.log('RETURNED')
+                console.log('RETURNED')
+                console.log('RETURNED')
+                console.log('RETURNED')
+                console.log('RETURNED')
+                console.log('RETURNED')
+                console.log('RETURNED')
+
+                // process.exit(-1)
+
+                self.receivePromises[userId] = undefined
+                return self.userIdFollowers[userId]
+              }
+
+          }
+          else
+          {
+            return setTimeout(() =>
+            {
+              return self.getUserFollowers(userId, command, params, followersCounter, selfSelf)
+            },self.timeoutForCounterValue)
+          }
+
+        }).
+        catch((e) =>
         {
-          self.receivePromises[userId] = 0
-          return self.userIdFollowers[userId]
-        }
-      }).
-      catch((e) =>
-      {
-        console.log('Instagram returned:' + e)
-      })
-    )
+          console.log('Instagram returned:' + e)
+        })
+  })
   }
 
   /**
