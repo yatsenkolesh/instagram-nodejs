@@ -44,8 +44,8 @@ module.exports = class Instagram
   */
   isPrivate(username)
   {
-    return this.getUserDataByUsername(username).then(data =>
-      return data.user.is_private
+    return this.getUserDataByUsername(username).then((data) =>
+      data.user.is_private
     )
   }
 
@@ -125,6 +125,8 @@ module.exports = class Instagram
               console.log(response)
               return [];
             }
+
+            console.log(json)
 
             if(json.status == 'ok')
             {
@@ -237,33 +239,34 @@ module.exports = class Instagram
     )
   }
 
-    /**
-      * I did not want to implement this, but I need a stars on github
-      * If you use this library - star this rep https://github.com/yatsenkolesh/instagram-nodejs
-      * Thank you, bro
-      * Follow/unfollow user by id
-      * @param {int} userID
-      * @param {boolean} isUnfollow
-      * @return {object} Promise of fetch request
-    */
-    follow(userId, isUnfollow)
+
+  /**
+    * I did not want to implement this, but I need a stars on github
+    * If you use this library - star this rep https://github.com/yatsenkolesh/instagram-nodejs
+    * Thank you, bro
+    * Follow/unfollow user by id
+    * @param {int} userID
+    * @param {boolean} isUnfollow
+    * @return {object} Promise of fetch request
+  */
+  follow(userId, isUnfollow)
+  {
+    return fetch('https://www.instagram.com/web/friendships/'+userId+(isUnfollow ? '/unfollow' : '/follow'),
     {
-      return fetch('https://www.instagram.com/web/friendships/'+userId+(isUnfollow ? '/unfollow' : '/follow'),
+      'method' : 'post',
+      'headers' :
       {
-        'method' : 'post',
-        'headers' :
-        {
-          'referer': 'https://www.instagram.com/',
-          'origin' : 'https://www.instagram.com',
-          'user-agent' : this.userAgent,
-          'x-instagram-ajax' : '1',
-          'x-requested-with' : 'XMLHttpRequest',
-          'x-csrftoken' : this.csrfToken,
-          cookie :' sessionid='+this.sessionId+'; csrftoken='+this.csrfToken
-        }
-      }).then(res =>
-      {
-        return res
-      })
-    }
+        'referer': 'https://www.instagram.com/',
+        'origin' : 'https://www.instagram.com',
+        'user-agent' : this.userAgent,
+        'x-instagram-ajax' : '1',
+        'x-requested-with' : 'XMLHttpRequest',
+        'x-csrftoken' : this.csrfToken,
+        cookie :' sessionid='+this.sessionId+'; csrftoken='+this.csrfToken
+      }
+    }).then(res =>
+    {
+      return res
+    })
   }
+}
