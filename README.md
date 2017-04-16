@@ -46,6 +46,13 @@ Inst.follow(3,0) //follow "kevin"
 Inst.follow(3, 1) //unfollow "kevin"
 ````
 
-You can get user id with Inst.getUserDataByUsername() method
+### User data (username,profile pic,full name) by id or name
+```js
+	Inst.csrfToken = 'your-csrf'
+	Inst.sessionId = 'your-session-id'
+	let userById = Inst.getUserDataById(3) //get user data for "kevin"
+	let userByUsername = Inst.getUserDataByUsername("kevin") // get user data by username
+	console.log(userById.username) // kevin
+```
 
 Star this repository on github, please. Thank you
