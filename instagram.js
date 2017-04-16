@@ -42,120 +42,119 @@ module.exports = class Instagram
     * @param {Int} userId
     * @param {String} command
     * @param {String} Params
+    * @param {Int} followersCounter counter of followers
+    * @param {Boolean} selfSelf if call by self
     * @return {Object} array followers list
   */
   getUserFollowers(userId, command, params, followersCounter, selfSelf)
   {
     const self = this
 
-    let blocked = 0
-    if(typeof self.receivePromises[userId] !== 'undefined' && !selfSelf)
-    {
-      blocked = 1
-      return 0
-    }
+      if(!selfSelf)
+        self.userIdFollowers[userId] = []
 
-    if(!params && blocked)
-    {
-      return
-    }
+      if(typeof self.receivePromises[userId] !== 'undefined' && !selfSelf)
+        return 0
 
-    command = !command ? 'first' : command
-    params = !params ? 20 : params
+      command = !command ? 'first' : command
+      params = !params ? 20 : params
 
-    let queryString = 'followed_by.'+command+'('+params+') {';
+      let queryString = 'followed_by.'+command+'('+params+') {';
 
-    let postBody=  'ig_user('+userId+') {'+queryString+'count,\
-        page_info {\
-          end_cursor,\
-          has_next_page\
-        },\
-        nodes {\
-          id,\
-          is_verified,\
-          followed_by_viewer,\
-          requested_by_viewer,\
-          full_name,\
-          profile_pic_url,\
-          username\
+      let postBody=  'ig_user('+userId+') {'+queryString+'count,\
+          page_info {\
+            end_cursor,\
+            has_next_page\
+          },\
+          nodes {\
+            id,\
+            is_verified,\
+            followed_by_viewer,\
+            requested_by_viewer,\
+            full_name,\
+            profile_pic_url,\
+            username\
+          }\
         }\
-      }\
-    }'
+      }'
 
-    let form = new formData();
-    form.append('q', postBody)
+      let form = new formData();
+      form.append('q', postBody)
 
-    if(!this.userIdFollowers[userId])
-      this.userIdFollowers[userId] = []
-
-    self.receivePromises[userId] = 1
-    return fetch('https://www.instagram.com/query/',
-    {
-      'method' : 'post',
-      'body' : form,
-      'headers' :
+      self.receivePromises[userId] = 1
+      return fetch('https://www.instagram.com/query/',
       {
-        'referer': 'https://www.instagram.com/',
-        'origin' : 'https://www.instagram.com',
-        'user-agent' : this.userAgent,
-        'x-instagram-ajax' : '1',
-        'x-requested-with' : 'XMLHttpRequest',
-        'x-csrftoken' : this.csrfToken,
-        cookie :' sessionid='+this.sessionId+'; csrftoken='+this.csrfToken
-    }
-    }).then(res =>
-      {
-        return res.text().then(function(html)
+        'method' : 'post',
+        'body' : form,
+        'headers' :
         {
-          //prepare convert to json
-          let json = html
-
-          try
-          {
-            json = JSON.parse(json)
-          }
-          catch(e)
-          {
-            console.log('Session error')
-            return JSON.parse('{}');
-          }
-
-          if(json.status == 'ok')
-          {
-            self.userIdFollowers[userId] = self.userIdFollowers[userId].concat(json.followed_by.nodes)
-
-            if(json.followed_by.page_info.has_next_page)
-            {
-              return new Promise((resolve) =>
-              {
-                let after = json.followed_by.page_info.end_cursor
-                resolve(self.getUserFollowers(userId, 'after', after + ',20',1,1))
-              },
-              (reject) =>
-                console.log('Error handle response from instagram server(get followers request)')
-              )
-              }
-              else
-              {
-                self.receivePromises[userId] = undefined
-                return self.userIdFollowers[userId]
-              }
-
-          }
-          else
-          {
-            return setTimeout(() =>
-            {
-              return self.getUserFollowers(userId, command, params, followersCounter, selfSelf)
-            },self.timeoutForCounterValue)
-          }
-
-        }).
-        catch((e) =>
+          'referer': 'https://www.instagram.com/',
+          'origin' : 'https://www.instagram.com',
+          'user-agent' : self.userAgent,
+          'x-instagram-ajax' : '1',
+          'x-requested-with' : 'XMLHttpRequest',
+          'x-csrftoken' : self.csrfToken,
+          cookie :' sessionid='+self.sessionId+'; csrftoken='+self.csrfToken
+      }
+      }).then(res =>
         {
-          console.log('Instagram returned:' + e)
-        })
-  })
+          return res.text().then(function(response)
+          {
+            //prepare convert to json
+            let json = response
+
+            try
+            {
+              json = JSON.parse(response)
+            }
+            catch(e)
+            {
+              console.log('Session error')
+              console.log(response)
+              return [];
+            }
+
+            console.log(json)
+
+            if(json.status == 'ok')
+            {
+              self.userIdFollowers[userId] = self.userIdFollowers[userId].concat(json.followed_by.nodes)
+
+              if(json.followed_by.page_info.has_next_page)
+              {
+                return new Promise((resolve) =>
+                {
+                  let after = json.followed_by.page_info.end_cursor
+                  resolve(self.getUserFollowers(userId, 'after', after + ',20',1,1))
+                },
+                (reject) =>
+                  console.log('Error handle response from instagram server(get followers request)')
+                )
+                }
+                else
+                {
+                  self.receivePromises[userId] = undefined
+                  return self.userIdFollowers[userId]
+                }
+
+            }
+            else
+            {
+                return new Promise((resolve) =>
+                {
+                  resolve(self.getUserFollowers(userId, command, params, followersCounter, selfSelf))
+                },
+                (reject) =>
+                  console.log('Error handle response from instagram server(get followers request)')
+                )
+            }
+
+          }).
+          catch((e) =>
+          {
+            console.log('Instagram returned:' + e)
+          })
+    })
   }
 
   /**
