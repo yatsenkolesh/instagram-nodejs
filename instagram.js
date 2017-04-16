@@ -7,6 +7,7 @@
 
 const fetch = require('node-fetch');
 const formData = require('form-data');
+const delay = require('timeout-as-promise')
 
 module.exports = class Instagram
 {
@@ -35,6 +36,17 @@ module.exports = class Instagram
     {
       return data;
     }))
+  }
+
+  /**
+    Is private check
+    * @param {String} usernmae
+  */
+  isPrivate(username)
+  {
+    return this.getUserDataByUsername(username).then(data =>
+      return data.user.is_private
+    )
   }
 
   /**
