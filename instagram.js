@@ -126,8 +126,6 @@ module.exports = class Instagram
               return [];
             }
 
-            console.log(json)
-
             if(json.status == 'ok')
             {
               self.userIdFollowers[userId] = self.userIdFollowers[userId].concat(json.followed_by.nodes)
@@ -251,9 +249,44 @@ module.exports = class Instagram
   */
   follow(userId, isUnfollow)
   {
-    return fetch('https://www.instagram.com/web/friendships/'+userId+(isUnfollow ? '/unfollow' : '/follow'),
+    const headers =
+    {
+      'referer': 'https://www.instagram.com/',
+      'origin' : 'https://www.instagram.com',
+      'user-agent' : this.userAgent,
+      'x-instagram-ajax' : '1',
+      'content-type': 'application/json',
+      'x-requested-with' : 'XMLHttpRequest',
+      'x-csrftoken' : undefined,
+      cookie :' sessionid='+this.sessionId+'; csrftoken='+this.csrfToken + '; mid=WPL0LQAEAAGG3XL5-xHXzClnpqA3; rur=FRC'
+    }
+
+    return fetch('https://www.instagram.com/web/friendships/'+userId+(isUnfollow == 1 ? '/unfollow' : '/follow'),
     {
       'method' : 'post',
+      'headers' : headers
+    }).then(res =>
+    {
+      return res
+    })
+  }
+
+  /**
+    * Return user data by id
+    * @param {Int} id
+    * @return {Object} promise
+  */
+  getUserDataById(id)
+  {
+    let query = 'ig_user('+id+'){id,username,external_url,full_name,profile_pic_url,biography,followed_by{count},follows{count},media{count},is_private,is_verified}'
+
+    let form = new formData();
+    form.append('q', query)
+
+    return fetch('https://www.instagram.com/query/',
+    {
+      'method' : 'post',
+      'body' : form,
       'headers' :
       {
         'referer': 'https://www.instagram.com/',
@@ -263,10 +296,9 @@ module.exports = class Instagram
         'x-requested-with' : 'XMLHttpRequest',
         'x-csrftoken' : this.csrfToken,
         cookie :' sessionid='+this.sessionId+'; csrftoken='+this.csrfToken
-      }
+    }
     }).then(res =>
-    {
-      return res
-    })
+      res.json().then(t => t)
+    )
   }
 }
