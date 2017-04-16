@@ -126,8 +126,6 @@ module.exports = class Instagram
               return [];
             }
 
-            console.log(json)
-
             if(json.status == 'ok')
             {
               self.userIdFollowers[userId] = self.userIdFollowers[userId].concat(json.followed_by.nodes)
