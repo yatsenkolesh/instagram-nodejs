@@ -7,7 +7,6 @@
 
 const fetch = require('node-fetch');
 const formData = require('form-data');
-const delay = require('timeout-as-promise')
 
 module.exports = class Instagram
 {
