@@ -7,6 +7,7 @@
 
 const fetch = require('node-fetch');
 const formData = require('form-data');
+const delay = require('timeout-as-promise')
 
 module.exports = class Instagram
 {
@@ -271,6 +272,22 @@ module.exports = class Instagram
   }
 
   /**
+    * @return {Object} default headers
+   */
+  getHeaders()
+  {
+    return {
+      'referer': 'https://www.instagram.com/',
+      'origin' : 'https://www.instagram.com',
+      'user-agent' : this.userAgent,
+      'x-instagram-ajax' : '1',
+      'x-requested-with' : 'XMLHttpRequest',
+      'x-csrftoken' : this.csrfToken,
+      cookie :' sessionid='+this.sessionId+'; csrftoken='+this.csrfToken
+    }
+  }
+
+  /**
     * Return user data by id
     * @param {Int} id
     * @return {Object} promise
@@ -286,18 +303,27 @@ module.exports = class Instagram
     {
       'method' : 'post',
       'body' : form,
-      'headers' :
-      {
-        'referer': 'https://www.instagram.com/',
-        'origin' : 'https://www.instagram.com',
-        'user-agent' : this.userAgent,
-        'x-instagram-ajax' : '1',
-        'x-requested-with' : 'XMLHttpRequest',
-        'x-csrftoken' : this.csrfToken,
-        cookie :' sessionid='+this.sessionId+'; csrftoken='+this.csrfToken
-    }
+      'headers' : this.getHeaders()
     }).then(res =>
       res.json().then(t => t)
+    )
+  }
+
+  /**
+    * This method return first "items" posts of feed
+    * Coming soon will be opportunity  for get part of feed
+    * On testing stage
+    * If you have a problems - create issue : https://github.com/yatsenkolesh/instagram-nodejs
+    * @param {Int} items
+    * @return {Object} Promise
+  */
+  getFeed(items)
+  {
+    return fetch('https://www.instagram.com/graphql/query/?query_id=17866917712078875&fetch_media_item_count='+items+'&fetch_media_item_cursor=0&fetch_comment_count=4&fetch_like=10',
+    {
+      headers: this.getHeaders(),
+    }).then(t =>
+      t.json().then(r => r)
     )
   }
 }
