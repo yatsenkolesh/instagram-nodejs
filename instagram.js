@@ -9,7 +9,6 @@ const fetch = require('node-fetch');
 const formData = require('form-data');
 const delay = require('timeout-as-promise')
 
-// class Instagram
 module.exports = class Instagram
 {
   /**
@@ -359,7 +358,30 @@ module.exports = class Instagram
       'method' : 'POST',
       'headers' : this.getHeaders()
     }).then(t =>
-      t.text().then(r => r)
+      t.json().then(r => r)
     )
+  }
+
+  /**
+    * @example url = https://www.instagram.com/p/BT1ynUvhvaR/
+    * @param {String} url
+    * @return {Object} Promise
+  */
+  getMediaInfoByUrl(url)
+  {
+    return fetch('https://api.instagram.com/oembed/?url='+url,
+    {
+      'headers': this.getHeaders()
+    }).then(t => t.json().then(r => r))
+  }
+
+  /**
+    * @example url = https://www.instagram.com/p/BT1ynUvhvaR/
+    * @param {String} url
+    * @return {Object} Promise
+  */
+  getMediaIdByUrl(url)
+  {
+    return this.getMediaInfoByUrl(url).then(t => t.media_id.split('_')[0])
   }
 }

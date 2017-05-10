@@ -1,16 +1,15 @@
 # instagram-nodejs
+Auth and get followers on instagram with nodejs
 
-#### Auth and get followers on instagram with nodejs
 
-#### License - BSD-3-Clause
-#### Important : you must update csrf token and sessionId only if password was changed
+### Important : you must update csrf token and sessionId only if password was changed
 
-#### To install from npm repository (I recommended use yarn, but you can use npm):
+### To install from npm repository (I recommended use yarn, but you can use npm):
 ```
 yarn add instagram-nodejs-without-api
 ```
 
-#### You can get instagram followers with next code:
+### You can get instagram followers with next code:
 ```js
 Instagram = new Instagram()
 
@@ -46,13 +45,14 @@ Inst.follow(3,0) //follow "kevin"
 Inst.follow(3, 1) //unfollow "kevin"
 ````
 
-### User data (username,profile pic,full name) by id or name
-```js
-Inst.csrfToken = 'your-csrf'
-Inst.sessionId = 'your-session-id'
-let userById = Inst.getUserDataById(3) //get user data for "kevin"
-let userByUsername = Inst.getUserDataByUsername("kevin") // get user data by username
-console.log(userById.username) // kevin
-```
+### Like/unlike
+````js
+  //get media id by url and like
+  Insta.getMediaIdByUrl('https://www.instagram.com/p/BT1ynUvhvaR/').then(r => Insta.like(r).then(d => console.log(d)))
+  //get media id by url and unlike
+  Insta.getMediaIdByUrl('https://www.instagram.com/p/BT1ynUvhvaR/').then(r => Insta.unlike(r).then(d => console.log(d)))
+````
+
+You can get user id with Inst.getUserDataByUsername() method
 
 Star this repository on github, please. Thank you
