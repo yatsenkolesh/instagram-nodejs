@@ -9,6 +9,7 @@ const fetch = require('node-fetch');
 const formData = require('form-data');
 const delay = require('timeout-as-promise')
 
+// class Instagram
 module.exports = class Instagram
 {
   /**
@@ -258,7 +259,7 @@ module.exports = class Instagram
       'content-type': 'application/json',
       'x-requested-with' : 'XMLHttpRequest',
       'x-csrftoken' : undefined,
-      cookie :' sessionid='+this.sessionId+'; csrftoken='+this.csrfToken + '; mid=WPL0LQAEAAGG3XL5-xHXzClnpqA3; rur=FRC'
+      cookie :' sessionid='+this.sessionId+'; csrftoken='+this.csrfToken + '; mid=WPL0LQAEAAGG3XL5-xHXzClnpqA3; rur=ASH; mid=WRN1_AAEAAE07QksztCl3OCnLj8Y;'
     }
 
     return fetch('https://www.instagram.com/web/friendships/'+userId+(isUnfollow == 1 ? '/unfollow' : '/follow'),
@@ -277,13 +278,13 @@ module.exports = class Instagram
   getHeaders()
   {
     return {
-      'referer': 'https://www.instagram.com/',
+      'referer': 'https://www.instagram.com/p/BT1ynUvhvaR/?taken-by=yatsenkolesh',
       'origin' : 'https://www.instagram.com',
       'user-agent' : this.userAgent,
       'x-instagram-ajax' : '1',
       'x-requested-with' : 'XMLHttpRequest',
       'x-csrftoken' : this.csrfToken,
-      cookie :' sessionid='+this.sessionId+'; csrftoken='+this.csrfToken
+      cookie :' sessionid='+this.sessionId+'; csrftoken='+this.csrfToken + ';'
     }
   }
 
@@ -319,11 +320,46 @@ module.exports = class Instagram
   */
   getFeed(items)
   {
-    return fetch('https://www.instagram.com/graphql/query/?query_id=17866917712078875&fetch_media_item_count='+items+'&fetch_media_item_cursor=0&fetch_comment_count=4&fetch_like=10',
+    return fetch('https://www.instagram.com/graphql/query/?query_id=17866917712078875&fetch_media_item_count='+items+'&fetch_media_item_cursor=&fetch_comment_count=4&fetch_like=10',
     {
       headers: this.getHeaders(),
     }).then(t =>
+      // console.log(t)
+      t.text().then(r => r)
+    )
+  }
+
+  /**
+    * Attention: postId need transfer only as String (reason int have max value - 2147483647)
+    * @example postID - '1510335854710027921'
+    * @param {String} post id
+    * @return {Object} Promse
+  */
+  like(postId)
+  {
+    return fetch('https://www.instagram.com/web/likes/'+postId+'/like/',
+    {
+      'method' : 'POST',
+      'headers' : this.getHeaders()
+    }).then(t =>
       t.json().then(r => r)
+    )
+  }
+
+  /**
+    * Attention: postId need transfer only as String (reason int have max value - 2147483647)
+    * @example postID - '1510335854710027921'
+    * @param {String} postId
+    * @return {Object} Promse
+  */
+  unlike(postId)
+  {
+    return fetch('https://www.instagram.com/web/likes/'+postId+'/unlike/',
+    {
+      'method' : 'POST',
+      'headers' : this.getHeaders()
+    }).then(t =>
+      t.text().then(r => r)
     )
   }
 }
