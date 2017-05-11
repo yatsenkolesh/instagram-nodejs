@@ -23,7 +23,9 @@
     "get",
     "instagram",
     "followers",
-    "nodejs"
+    "nodejs",
+    "mass-follow",
+    "mass-liking",
   ],
   "author": "Alex Yatsenko <webfay1@gmail.com> (http://webfay.net)",
   "license": "BSD-3-Clause",
