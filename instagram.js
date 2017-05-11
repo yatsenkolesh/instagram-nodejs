@@ -8,7 +8,8 @@
 const fetch = require('node-fetch');
 const formData = require('form-data');
 
-module.exports = class Instagram
+// module.exports = class Instagram
+class Instagram
 {
   /**
     * Constructor
@@ -309,22 +310,38 @@ module.exports = class Instagram
   }
 
   /**
+    * When you pass items counter param instagram create pagination
+    * tokens on all iterations and gives on every response end_cursor, which the need to pass on next feed request
+    *
     * This method return first "items" posts of feed
     * Coming soon will be opportunity  for get part of feed
-    * On testing stage
+    * On testing stage (+- all rights)
     * If you have a problems - create issue : https://github.com/yatsenkolesh/instagram-nodejs
-    * @param {Int} items
+    * @param {Int} items (default - 10)
     * @return {Object} Promise
   */
-  getFeed(items)
+  getFeed(items, cursor)
   {
-    return fetch('https://www.instagram.com/graphql/query/?query_id=17866917712078875&fetch_media_item_count='+items+'&fetch_media_item_cursor=&fetch_comment_count=4&fetch_like=10',
+    items = items ? items : 10;
+    return fetch('https://www.instagram.com/graphql/query/?query_id=17866917712078875&fetch_media_item_count='+items+'&fetch_media_item_cursor='+cursor+'&fetch_comment_count=4&fetch_like=10',
     {
       headers: this.getHeaders(),
     }).then(t =>
       // console.log(t)
-      t.text().then(r => r)
+      t.json().then(r => r)
     )
+  }
+
+  /**
+    * Simple variable for get next page
+    * @param {Object} json contents from this.getFeed
+    * @return {String} if next page is not exists - false
+  */
+  getFeedNextPage(json)
+  {
+    let page = json.data.user.edge_web_feed_timeline.page_info
+
+    return page.has_next_page ? page.end_cursor : false
   }
 
   /**
@@ -360,6 +377,7 @@ module.exports = class Instagram
       t.json().then(r => r)
     )
   }
+
 
   /**
     * @example url = https://www.instagram.com/p/BT1ynUvhvaR/

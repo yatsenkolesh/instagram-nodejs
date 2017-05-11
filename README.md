@@ -53,6 +53,20 @@ Inst.follow(3, 1) //unfollow "kevin"
   Insta.getMediaIdByUrl('https://www.instagram.com/p/BT1ynUvhvaR/').then(r => Insta.unlike(r).then(d => console.log(d)))
 ````
 
+### Get feed
+````js
+  let pageFirst = Insta.getFeed(10).then(function(t)
+  {
+    let PageSecond = Insta.getFeed(10, Insta.getFeedNextPage(t)).then(function(t)
+    {
+      //two page
+      console.log(t)
+    })
+  })
+````
+When you pass items counter param instagram create pagination tokens on all iterations and gives on every response end_cursor, which the need to pass on next feed request
+
+
 You can get user id with Inst.getUserDataByUsername() method
 
 Star this repository on github, please. Thank you
