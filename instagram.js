@@ -9,7 +9,6 @@ const fetch = require('node-fetch');
 const formData = require('form-data');
 
 module.exports = class Instagram
-// class Instagram
 {
   /**
     * Constructor
@@ -400,5 +399,57 @@ module.exports = class Instagram
   getMediaIdByUrl(url)
   {
     return this.getMediaInfoByUrl(url).then(t => t.media_id.split('_')[0])
+  }
+
+  /**
+    * Get media user list on userId with pagination
+    * @param {String} userId
+    * @param {String} cursor (next cursor). Use 0, if you want to get first page
+    * @param {Int} mediaCounter default - 12
+    * @return {Object} Promise
+  */
+  getUserMedia(userId, cursor, mediaCounter)
+  {
+    mediaCounter = mediaCounter ? mediaCounter : 12
+    let form = new formData()
+    form.append('q', 'ig_user('+userId+') { media.after('+cursor+', '+mediaCounter+') {\
+    count,\
+    nodes {\
+      __typename,\
+      caption,\
+      code,\
+      comments {\
+        count\
+      },\
+      comments_disabled,\
+      date,\
+      dimensions {\
+        height,\
+        width\
+      },\
+      display_src,\
+      id,\
+      is_video,\
+      likes {\
+        count\
+      },\
+      owner {\
+        id\
+      },\
+      thumbnail_src,\
+      video_views\
+    },\
+    page_info\
+    }\
+   }')
+ form.append('ref', 'users::show')
+ form.append('query_id', '17849115430193904') // this is static id. May be changed after rebuild, but now actually
+
+    return fetch('https://www.instagram.com/query/',
+    {
+      headers : this.getHeaders(),
+      method : 'post',
+      body : form
+    }).then(r => r.text().then(t => t))
   }
 }

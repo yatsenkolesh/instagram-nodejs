@@ -64,6 +64,16 @@ Inst.follow(3, 1) //unfollow "kevin"
     })
   })
 ````
+
+### Get user media
+````js
+  //... auth (look up)
+  //for example: get 12 first media entries for "kevin"
+  // 0 - if you need to get first page
+  // next cursor : r.page_info.end_cursor
+  Insta.getUserMedia(3, '0', 12).then(f => console.log(f))
+````
+
 When you pass items counter param instagram create pagination tokens on all iterations and gives on every response end_cursor, which the need to pass on next feed request
 
 
