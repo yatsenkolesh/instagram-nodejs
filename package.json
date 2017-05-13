@@ -6,7 +6,7 @@
   },
   "name": "instagram-nodejs-without-api",
   "description": "Auth and get followers on instagram with nodejs",
-  "version": "0.2.5",
+  "version": "0.2.0",
   "main": "instagram.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -26,7 +26,9 @@
     "nodejs",
     "mass-following",
     "mass-liking",
-    "instagram-feed"
+    "instagram-feed",
+    "instagram-search",
+    "instagram-full-search"
   ],
   "author": "Alex Yatsenko <webfay1@gmail.com> (http://webfay.net)",
   "license": "BSD-3-Clause",

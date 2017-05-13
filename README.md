@@ -74,6 +74,19 @@ Inst.follow(3, 1) //unfollow "kevin"
   Insta.getUserMedia(3, '0', 12).then(f => console.log(f))
 ````
 
+### Get media by hashtags and locations
+````js
+  Insta.commonSearch('Kyiv').then(r =>
+  {
+    //get location id for Kyiv
+    let locationId = r.places[0].place.location['pk']
+    //search posts from Kyiv
+    Insta.searchBy('location', locationId, '0', 12).then(r => console.log(r))
+    //search posts by hashtag "Eurovision"
+  })
+  Insta.searchBy('hashtag', 'Eurovision').then(r => console.log(r))
+````
+
 When you pass items counter param instagram create pagination tokens on all iterations and gives on every response end_cursor, which the need to pass on next feed request
 
 

@@ -22,6 +22,7 @@ module.exports = class Instagram
     this.timeoutForCounter = 300
     this.timeoutForCounterValue = 30000
     this.receivePromises = {}
+    this.searchTypes = ['location', 'hashtag']
   }
 
   /**
@@ -50,6 +51,7 @@ module.exports = class Instagram
 
   /**
     * User followers list
+    * Bench - 1k followers/1 min
     * @param {Int} userId
     * @param {String} command
     * @param {String} Params
@@ -410,6 +412,7 @@ module.exports = class Instagram
   */
   getUserMedia(userId, cursor, mediaCounter)
   {
+    cursor = cursor ? cursor : '0'
     mediaCounter = mediaCounter ? mediaCounter : 12
     let form = new formData()
     form.append('q', 'ig_user('+userId+') { media.after('+cursor+', '+mediaCounter+') {\
@@ -451,5 +454,88 @@ module.exports = class Instagram
       method : 'post',
       body : form
     }).then(r => r.text().then(t => t))
+  }
+
+  /**
+    * End cursor - t.entry_data.TagPage[0].tag.media.page_info['end_cursor']
+    * Media(nodes) - t.entry_data.TagPage[0].tag.media['nodes']
+    * @param {String} searchBy - location, hashtag
+    * @param {String} q - location id, or hashtag
+    * @param {String} cursor pagination cursor
+    * @param {Int} mediaCounter
+    * @return {Object} Promise
+  */
+  searchBy(searchBy, q, cursor, mediaCounter)
+  {
+    if(this.searchTypes.indexOf(searchBy) === false)
+      throw 'search type '+ searchBy + ' is not found'
+
+    //exclusion for hashtag if not cursor
+    if(searchBy == 'hashtag' && !cursor)
+    {
+      return  fetch('https://www.instagram.com/explore/tags/'+q+'/',
+      {
+        headers: this.getHeaders(),
+      }).then( t => t.text().then(r => JSON.parse(r.match(/\<script type=\"text\/javascript\">window\._sharedData \=(.*)\;<\//)[1])))
+    }
+
+    let form = new formData()
+    mediaCounter = mediaCounter ? mediaCounter : 12
+    form.append('q', 'ig_'+searchBy+'('+q+') { media.after('+cursor+', '+mediaCounter+') {\
+      count,\
+      nodes {\
+        __typename,\
+        caption,\
+        code,\
+        comments {\
+          count\
+        },\
+        comments_disabled,\
+        date,\
+        dimensions {\
+          height,\
+          width\
+        },\
+        display_src,\
+        id,\
+        is_video,\
+        likes {\
+          count\
+        },\
+        owner {\
+          id\
+        },\
+        thumbnail_src,\
+        video_views\
+      },\
+      page_info\
+    }\
+     }')
+
+    form.append('ref', 'locations::show')
+    form.append('query_id', '') //empty
+
+
+    return fetch('https://www.instagram.com/query/',
+    {
+      headers: this.getHeaders(),
+      method: 'post',
+      body: form
+    }).then(t => t.json().then(r => r))
+  }
+
+  /**
+    * Place id path - r.places[0].place.location['pk'], r.places[1].place.location['pk'], ...
+    * Common search returned locations, hashtags and users
+    * @param {String} q
+    * @return {Object} Promise
+  */
+  commonSearch(q, rankToken)
+  {
+    rankToken = rankToken ? rankToken : ''
+    return fetch('https://www.instagram.com/web/search/topsearch/?context=blended&query='+q+'&rank_token='+ rankToken,
+    {
+      headers: this.getHeaders() // no required
+    }).then(t => t.json().then(r => r))
   }
 }
