@@ -1,6 +1,7 @@
 # instagram-nodejs
 Auth and get followers on instagram with nodejs
 
+Join us with gitter: https://gitter.im/nodejs-instagram/Library
 
 ### Important : you must update csrf token and sessionId only if password was changed
 
