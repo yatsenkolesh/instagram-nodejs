@@ -83,8 +83,8 @@ Inst.follow(3, 1) //unfollow "kevin"
     let locationId = r.places[0].place.location['pk']
     //search posts from Kyiv
     Insta.searchBy('location', locationId, '0', 12).then(r => console.log(r))
-    //search posts by hashtag "Eurovision"
   })
+  //search posts by hashtag "Eurovision"
   Insta.searchBy('hashtag', 'Eurovision').then(r => console.log(r))
 ````
 
