@@ -6,7 +6,7 @@
   },
   "name": "instagram-nodejs-without-api",
   "description": "Auth and get followers on instagram with nodejs",
-  "version": "0.2.0",
+  "version": "0.2.7",
   "main": "instagram.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -35,5 +35,6 @@
   "bugs": {
     "url": "https://github.com/yatsenkolesh/instagram-nodejs/issues"
   },
-  "homepage": "https://github.com/yatsenkolesh/instagram-nodejs#readme"
+  "homepage": "https://github.com/yatsenkolesh/instagram-nodejs#readme",
+  "devDependencies": {}
 }
