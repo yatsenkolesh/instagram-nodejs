@@ -2,7 +2,8 @@
   "dependencies": {
     "fetch-cookie": "^0.6.0",
     "form-data": "^2.1.2",
-    "node-fetch": "^1.6.3"
+    "node-fetch": "^1.6.3",
+    "timeout-as-promise": "^1.0.0"
   },
   "name": "instagram-nodejs-without-api",
   "description": "Auth and get followers on instagram with nodejs",
