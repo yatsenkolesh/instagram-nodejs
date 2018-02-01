@@ -265,7 +265,7 @@ module.exports = class Instagram
     return fetch('https://www.instagram.com/web/friendships/'+userId+(isUnfollow == 1 ? '/unfollow' : '/follow'),
     {
       'method' : 'post',
-      'headers' : headers
+      'headers': this.getHeaders()//headers
     }).then(res =>
     {
       return res
