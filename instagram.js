@@ -237,6 +237,44 @@ module.exports = class Instagram
       console.log('Instagram authentication failed')
     )
   }
+ 
+ /**
+     * Registration for instagram, returning true or false
+     * true if account was successfully created
+     * @param {String} username
+     * @param {String} password
+     * @param {String} name
+     * @param {String} email
+     * @return {Boolen} account_created
+     */
+    reg(username, password, name, email) {
+        let form = new formData();
+        form.append('username', username)
+        form.append('password', password)
+        form.append('firstname', name)
+        form.append('email', email)
+        form.append('seamless_login_enabled', "1")
+
+        return fetch('https://www.instagram.com/accounts/web_create_ajax/', {
+            'method': 'post',
+            'body': form,
+            'headers': {
+                'referer': 'https://www.instagram.com/',
+                'origin': 'https://www.instagram.com',
+                'user-agent': this.userAgent,
+                'x-instagram-ajax': '1',
+                'x-requested-with': 'XMLHttpRequest',
+                'x-csrftoken': this.csrfToken,
+                cookie: 'csrftoken=' + this.csrfToken
+            }
+        })
+        .then(res => res.json())
+        .then(json => {
+            //console.log(json.errors);
+            return json.account_created;
+        })
+        .catch(() => console.log('Instagram registration failed'))
+    }
 
 
   /**
