@@ -32,9 +32,14 @@ module.exports = class Instagram
   */
   getUserDataByUsername(username)
   {
-    return fetch('https://www.instagram.com/'+username+'/?__a=1').then(res => res.text().then(function(data)
+    return fetch('https://www.instagram.com/' + username).then(res => res.text().then(function(data)
     {
-      return data;
+      const regex = /window\._sharedData = (.*);<\/script>/;
+      var match = regex.exec(data);
+      if (typeof match[1] === 'undefined') {
+        return '';
+      }
+      return JSON.parse(match[1]).entry_data.ProfilePage[0];
     }))
   }
 
