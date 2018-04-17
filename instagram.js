@@ -35,7 +35,7 @@ module.exports = class Instagram
     return fetch('https://www.instagram.com/' + username).then(res => res.text().then(function(data)
     {
       const regex = /window\._sharedData = (.*);<\/script>/;
-      var match = regex.exec(data);
+      const match = regex.exec(data);
       if (typeof match[1] === 'undefined') {
         return '';
       }
