@@ -174,7 +174,7 @@ module.exports = class Instagram {
         t => {
           let cookies = t.headers._headers['set-cookie']
           for (let i in cookies) {
-            if (cookies[i].includes('sessionid=IGS')) {
+            if (!cookies[i].includes('csrftoken="";') && cookies[i].includes('csrftoken=')) {
               return cookies[i].split(';')[0].replace('csrftoken=', '')
             }
           }
@@ -212,7 +212,8 @@ module.exports = class Instagram {
         t => {
           let cookies = t.headers._headers['set-cookie']
           for (let i in cookies) {
-            if (cookies[i].includes('csrftoken') && !cookies[i].includes('csrftoken=""')) {
+            if (!cookies[i].includes('sessionid=""') && cookies[i].includes('sessionid=')) {
+              console.log(cookies[i])
               return cookies[i].split(';')[0].replace('sessionid=', '')
             }
           }
