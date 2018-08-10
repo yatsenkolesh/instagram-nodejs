@@ -12,6 +12,7 @@ yarn add instagram-nodejs-without-api
 
 ### You can get instagram followers with next code:
 ```js
+let Instagram = require('instagram-nodejs-without-api');
 Instagram = new Instagram()
 
 
@@ -20,20 +21,20 @@ Instagram.getCsrfToken().then((csrf) =>
   Instagram.csrfToken = csrf;
 }).then(() =>
 {
-  Instagram.auth('inst-your-username', 'inst-your-password').then(sessionId =>
+  return Instagram.auth('inst-your-username', 'inst-your-password').then(sessionId =>
   {
     Instagram.sessionId = sessionId
 
-    Instagram.getUserDataByUsername('username-for-get').then((t) =>
+    return Instagram.getUserDataByUsername('username-for-get').then((t) =>
     {
-      Instagram.getUserFollowers(JSON.parse(t).graphql.user.id).then((t) =>
+      return Instagram.getUserFollowers(t.graphql.user.id).then((t) =>
       {
         console.log(t); // - instagram followers for user "username-for-get"
       })
     })
 
   })
-})
+}).catch(console.error);
 ```
 
 ### Follow/unfollow
