@@ -305,7 +305,7 @@ module.exports = class Instagram {
 
       return this.essentialsValues.sessionId;
     }).catch(() =>
-      console.log('Instagram authentication failed')
+      console.log('Instagram authentication failed (challenge required erro)')
     )
 }
 
