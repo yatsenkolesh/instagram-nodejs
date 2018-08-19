@@ -58,17 +58,8 @@ module.exports = class Instagram {
     return cookie;
   }
 
-  combineHeaders(headerArray){
-    var result = {}
-
-    for (var header of headerArray)
-      result = Object.assign(result, header)
-
-    return result
-  }
-
-  addToBaseHeader(data){
-    return this.combineHeaders([this.baseHeader, data])
+  combineWithBaseHeader(data){
+    return Object.assign(this.baseHeader, data)
   }
 
   updateEssentialValues(src, isHTML){
@@ -113,7 +104,7 @@ module.exports = class Instagram {
     var fetch_data = {
       'method': 'get',
       'headers':
-        this.addToBaseHeader(
+        this.combineWithBaseHeader(
           {
             'accept': 'text/html,application/xhtml+xml,application/xml;q0.9,image/webp,image/apng,*.*;q=0.8',
             'accept-encoding': 'gzip, deflate, br',
@@ -194,7 +185,7 @@ module.exports = class Instagram {
         'method': 'post',
         'body': form,
         'headers':
-          this.addToBaseHeader(
+          this.combineWithBaseHeader(
             {
               'accept': 'text/html,application/xhtml+xml,application/xml;q0.9,image/webp,image/apng,*.*;q=0.8',
               'accept-encoding': 'gzip, deflate, br',
@@ -258,7 +249,7 @@ module.exports = class Instagram {
       {
         'method': 'get',
         'headers':
-          this.addToBaseHeader(
+          this.combineWithBaseHeader(
             {
               'accept': 'text/html,application/xhtml+xml,application/xml;q0.9,image/webp,image/apng,*.*;q=0.8',
               'accept-encoding': 'gzip, deflate, br',
@@ -289,7 +280,7 @@ module.exports = class Instagram {
     method  : 'POST',
     body    : formdata,
     headers : 
-      this.addToBaseHeader(
+      this.combineWithBaseHeader(
         {
           'accept'            : '*/*',
           'accept-encoding'   : 'gzip, deflate, br',
