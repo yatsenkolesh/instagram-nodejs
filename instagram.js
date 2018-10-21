@@ -297,7 +297,7 @@ module.exports = class Instagram {
   return fetch('https://www.instagram.com/accounts/login/ajax/', options).then(
     t => {
       this.updateEssentialValues(t.headers._headers['set-cookie'])
-      return this.essentialsValues.sessionId;
+      return this.essentialValues.sessionid;
     }).catch(() =>
       console.log('Instagram authentication failed (challenge required erro)')
     )
