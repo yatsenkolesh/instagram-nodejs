@@ -6,7 +6,7 @@
   },
   "name": "instagram-nodejs-without-api",
   "description": "Auth and get followers on instagram with nodejs",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "main": "instagram.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
