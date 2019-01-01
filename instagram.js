@@ -52,7 +52,9 @@ module.exports = class Instagram {
     var keys = Object.keys(this.essentialValues)
     for (var i = 0; i < keys.length; i++){
       var key = keys[i];
-      cookie += key + '=' + this.essentialValues[key] + (i < keys.length - 1 ? '; ' : '')
+      if (this.essentialValues[key] !== undefined) {
+        cookie += key + '=' + this.essentialValues[key] + (i < keys.length - 1 ? '; ' : '')
+      }
     }
 
     return cookie;
