@@ -19,7 +19,7 @@ module.exports = class Instagram {
     this.userIdFollowers = {};
     this.timeoutForCounter = 300
     this.timeoutForCounterValue = 30000
-    this.paginationDelay = 10000
+    this.paginationDelay = 30000
     this.receivePromises = {}
     this.searchTypes = ['location', 'hashtag']
 
