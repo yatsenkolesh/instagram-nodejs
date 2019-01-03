@@ -215,7 +215,8 @@ module.exports = class Instagram {
           }
           else {
             return new Promise((resolve) => {
-              console.log('fetching next page in ' + this.paginationDelay / 1000 + ' seconds');
+              console.log(json);
+              console.log('request failed, retrying in ' + this.paginationDelay / 1000 + ' seconds');
               setTimeout(() => {
                 resolve(self.getUserFollowers(userId, endCursor, count, followersCounter, selfSelf));
               }, this.paginationDelay);
