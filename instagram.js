@@ -19,6 +19,7 @@ module.exports = class Instagram {
     this.userIdFollowers = {};
     this.timeoutForCounter = 300
     this.timeoutForCounterValue = 30000
+    this.paginationDelay = 30000
     this.receivePromises = {}
     this.searchTypes = ['location', 'hashtag']
 
@@ -141,13 +142,13 @@ module.exports = class Instagram {
     * User followers list
     * Bench - 1k followers/1 min
     * @param {Int} userId
-    * @param {String} command
-    * @param {String} Params
+    * @param {String} endCursor cursor used to fetch next page
+    * @param {Int} count count of results to return (API may return less)
     * @param {Int} followersCounter counter of followers
     * @param {Boolean} selfSelf if call by self
     * @return {Object} array followers list
   */
-  getUserFollowers(userId, command, params, followersCounter, selfSelf) {
+  getUserFollowers(userId, endCursor, count, followersCounter, selfSelf) {
     const self = this
 
     if (!selfSelf)
@@ -156,36 +157,24 @@ module.exports = class Instagram {
     if (typeof self.receivePromises[userId] !== 'undefined' && !selfSelf)
       return 0
 
-    command = !command ? 'first' : command
-    params = !params ? 20 : params
+    count = count || 20;
 
-    let queryString = 'followed_by.' + command + '(' + params + ') {';
+    const query = {
+      id: userId,
+      include_reel: true,
+      fetch_mutual: true,
+      first: count
+    };
+    if (endCursor) {
+      query.after = endCursor;
+    }
 
-    let postBody = 'ig_user(' + userId + ') {' + queryString + 'count,\
-          page_info {\
-            end_cursor,\
-            has_next_page\
-          },\
-          nodes {\
-            id,\
-            is_verified,\
-            followed_by_viewer,\
-            requested_by_viewer,\
-            full_name,\
-            profile_pic_url,\
-            username\
-          }\
-        }\
-      }'
-
-    let form = new formData();
-    form.append('q', postBody)
+    const variables = encodeURIComponent(JSON.stringify(query));
 
     self.receivePromises[userId] = 1
-    return fetch('https://www.instagram.com/query/',
+    return fetch('https://www.instagram.com/graphql/query/?query_hash=56066f031e6239f35a904ac20c9f37d9&variables=' + variables,
       {
-        'method': 'post',
-        'body': form,
+        'method': 'get',
         'headers':
           this.combineWithBaseHeader(
             {
@@ -195,9 +184,9 @@ module.exports = class Instagram {
             }
           )
       }).then(res => {
-        return res.text().then(function (response) {
+        return res.text().then((response) => {
           //prepare convert to json
-          let json = response
+          let json = response;
 
           try {
             json = JSON.parse(response)
@@ -209,16 +198,16 @@ module.exports = class Instagram {
           }
 
           if (json.status == 'ok') {
-            self.userIdFollowers[userId] = self.userIdFollowers[userId].concat(json.followed_by.nodes)
+            self.userIdFollowers[userId] = self.userIdFollowers[userId].concat(json.data.user.edge_followed_by.edges)
 
-            if (json.followed_by.page_info.has_next_page) {
+            if (json.data.user.edge_followed_by.page_info.has_next_page) {
+              let end_cursor = json.data.user.edge_followed_by.page_info.end_cursor
               return new Promise((resolve) => {
-                let after = json.followed_by.page_info.end_cursor
-                resolve(self.getUserFollowers(userId, 'after', after + ',20', 1, 1))
-              },
-                (reject) =>
-                  console.log('Error handle response from instagram server(get followers request)')
-              )
+                console.log('fetching next page in ' + this.paginationDelay / 1000 + ' seconds');
+                setTimeout(() => {
+                  resolve(self.getUserFollowers(userId, end_cursor, count, 1, 1));
+                }, this.paginationDelay);
+              });
             }
             else {
               self.receivePromises[userId] = undefined
@@ -228,17 +217,17 @@ module.exports = class Instagram {
           }
           else {
             return new Promise((resolve) => {
-              resolve(self.getUserFollowers(userId, command, params, followersCounter, selfSelf))
-            },
-              (reject) =>
-                console.log('Error handle response from instagram server(get followers request)')
-            )
+              console.log(json);
+              console.log('request failed, retrying in ' + this.paginationDelay / 1000 + ' seconds');
+              setTimeout(() => {
+                resolve(self.getUserFollowers(userId, endCursor, count, followersCounter, selfSelf));
+              }, this.paginationDelay);
+            });
           }
 
-        }).
-          catch((e) => {
-            console.log('Instagram returned:' + e)
-          })
+        }).catch((e) => {
+          console.log('Instagram returned:' + e)
+        })
       })
   }
 
