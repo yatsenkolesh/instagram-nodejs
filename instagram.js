@@ -117,11 +117,12 @@ module.exports = class Instagram {
     }
     
     return fetch('https://www.instagram.com/' + username, fetch_data).then(res => res.text().then(function (data) {
-      console.log(data)
+      //console.log(data)
     
       const regex = /window\._sharedData = (.*);<\/script>/;
       const match = regex.exec(data);
       if (typeof match[1] === 'undefined') {
+        console.log("No Profile Found. Instagram Returned: "+data)
         return '';
       }
       return JSON.parse(match[1]).entry_data.ProfilePage[0];
