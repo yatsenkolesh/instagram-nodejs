@@ -117,7 +117,7 @@ module.exports = class Instagram {
     }
     
     return fetch('https://www.instagram.com/' + username, fetch_data).then(res => res.text().then(function (data) {
-      console.log(data)
+      //console.log(data)
     
       const regex = /window\._sharedData = (.*);<\/script>/;
       const match = regex.exec(data);
