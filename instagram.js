@@ -121,7 +121,7 @@ module.exports = class Instagram {
     
       const regex = /window\._sharedData = (.*);<\/script>/;
       const match = regex.exec(data);
-      if (typeof match[1] === 'undefined') {
+      if (!match || (match && typeof match[1] === 'undefined')) {
         return '';
       }
       return JSON.parse(match[1]).entry_data.ProfilePage[0];
