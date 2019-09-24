@@ -116,14 +116,14 @@ module.exports = class Instagram {
         )
     }
     
-    return fetch('https://www.instagram.com/' + username, fetch_data).then(res => res.text().then(function (data) {
-      //console.log(data)
-    
+    return fetch('https://www.instagram.com/' + username, fetch_data).then(res => res.text().then(function (data) {  
       const regex = /window\._sharedData = (.*);<\/script>/;
       const match = regex.exec(data);
+     
       if (!match || (match && typeof match[1] === 'undefined')) {
         return '';
       }
+     
       return JSON.parse(match[1]).entry_data.ProfilePage[0];
     }))
   }
@@ -326,7 +326,6 @@ module.exports = class Instagram {
     })
       .then(res => res.json())
       .then(json => {
-        //console.log(json.errors);
         return json.account_created;
       })
       .catch(() => console.log('Instagram registration failed'))
@@ -417,7 +416,6 @@ module.exports = class Instagram {
       {
         headers: this.getHeaders(),
       }).then(t =>
-        // console.log(t)
         t.json().then(r => r)
       )
   }
