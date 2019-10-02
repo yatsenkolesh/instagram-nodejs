@@ -27,5 +27,3 @@ test('Get Instagram Account', async t => {
 
     t.is(userId, '7696780203');
 });
-
-
