@@ -1,7 +1,4 @@
-/**
-  * @author Alex Yatsenko
-  * @link https://github.com/yatsenkolesh/instagram-nodejs
-*/
+
 
 "use-strict";
 
@@ -17,9 +14,9 @@ module.exports = class Instagram {
     this.sessionId = sessionId
     this.userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36'
     this.userIdFollowers = {};
-    this.timeoutForCounter = 300
-    this.timeoutForCounterValue = 30000
-    this.paginationDelay = 30000
+    this.timeoutForCounter = 250
+    this.timeoutForCounterValue = 20000
+    this.paginationDelay = 20000
     this.receivePromises = {}
     this.searchTypes = ['location', 'hashtag']
 
@@ -130,7 +127,7 @@ module.exports = class Instagram {
 
   /**
     Is private check
-    * @param {String} usernmae
+    * @param {String} username
   */
   isPrivate(username) {
     return this.getUserDataByUsername(username).then((data) =>
