@@ -95,3 +95,12 @@ When you pass items counter param instagram create pagination tokens on all iter
 You can get user id with Inst.getUserDataByUsername() method
 
 Star this repository on github, please. Thank you
+
+
+### Tests
+
+You must define a .env file with username and password of the instagram login. (see .env.example)
+
+``` npm test ```
+
+```  yarn test ```
