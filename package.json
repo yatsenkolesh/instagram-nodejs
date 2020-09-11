@@ -34,7 +34,7 @@
   "dependencies": {
     "fetch-cookie": "^0.6.0",
     "form-data": "^2.1.2",
-    "node-fetch": "^1.6.3"
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
     "ava": "^2.4.0",
